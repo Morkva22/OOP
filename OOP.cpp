@@ -96,7 +96,7 @@ public:
         : House(floar, address, countOfRooms, 0, owner), number(new int(2)) {}
 
     Apartament(Apartament&& other)
-        : House(*other.floar, *other.adres, *other.countOfApartament, *other.countOfPeople, *other.owner), number(other.number)
+    : House(*other.floar, *other.adres, *other.countOfApartament, *other.countOfPeople, *other.owner), number(new int(0))
     {
         other.number = nullptr;
     }
@@ -120,17 +120,31 @@ public:
 
 int main()
 {
+    cout << "Human 1:-------------------------------- " << endl;
+    Human human1(20, "Ivan", "Ivanov");
+    human1.print_Human();
+    cout << endl << endl;
+    cout << "Human 2 copy:----------------------------------- " << endl;
+    Human human2 = move(human1);
+    human2.print_Human();
+    cout << endl << endl;
     cout << "House 1:-------------------------------- " << endl;
     House house1(5, "Kiev", 10, 20, "Ivanov");
     house1.print_House();
+    cout << endl << endl;
     cout << "House 2 copy:----------------------------------- " << endl;
     House house2 = move(house1);
     house2.print_House();
+    cout << endl << endl;
     cout << "Apartament 1:----------------------------------- " << endl;
     Apartament apartament1(5, 3, "Ivanov", "Kiev", 4);
     apartament1.print_Apartament();
+    cout << endl << endl;
     cout << "Apartament 2 copy:----------------------------------- " << endl;
     Apartament apartament2 = move(apartament1);
     apartament2.print_Apartament();
+    
+    
     return 0;
+    
 }
