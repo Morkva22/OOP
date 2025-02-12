@@ -8,7 +8,6 @@ public:
     Student(string name, string surname, int age, string name_specialty, string group, double average_mark, string full_name_teacher)
         : name(new string(name)), surname(new string(surname)), age(new int(age)), name_specialty(new string(name_specialty)), group(new string(group)), average_mark(new double(average_mark)), full_name_teacher(new string(full_name_teacher)) {}
     
-    // getters
     string get_name() { return *name; }
     string get_surname() { return *surname; }
     int get_age() { return *age; }
@@ -16,8 +15,7 @@ public:
     string get_group() { return *group; }
     double get_average_mark() { return *average_mark; }
     string get_full_name_teacher() { return *full_name_teacher; }
-
-    // setters
+    
     void set_name(string name) { *(this->name) = name; }
     void set_surname(string surname) { *(this->surname) = surname; }
     void set_age(int age) { *(this->age) = age; }
@@ -26,7 +24,7 @@ public:
     void set_average_mark(double average_mark) { *(this->average_mark) = average_mark; }
     void set_full_name_teacher(string full_name_teacher) { *(this->full_name_teacher) = full_name_teacher; }
 
-    Student(Student& other)
+    Student(const Student& other) 
     {
         this->name = new string(*other.name);
         this->surname = new string(*other.surname);
@@ -35,6 +33,17 @@ public:
         this->group = new string(*other.group);
         this->average_mark = new double(*other.average_mark);
         this->full_name_teacher = new string(*other.full_name_teacher);
+    }
+
+    Student(Student&& other) 
+    {
+        this->name = other.name;
+        this->surname = other.surname;
+        this->age = other.age;
+        this->name_specialty = other.name_specialty;
+        this->group = other.group;
+        this->average_mark = other.average_mark;
+        this->full_name_teacher = other.full_name_teacher;
 
         other.name = nullptr;
         other.surname = nullptr;
@@ -71,7 +80,6 @@ class Aspirant : public Student
 private:
     string* name_dissertation;
     string* name_supervisor;
-    string* name_specialty;
     string* name_faculty;
     string* name_university;
     string* name_cathedra;
@@ -83,24 +91,30 @@ public:
     {
         this->name_dissertation = new string(name_dissertation);
         this->name_supervisor = new string(name_supervisor);
-        this->name_specialty = new string(name_specialty);
         this->name_faculty = new string(name_faculty);
         this->name_university = new string(name_university);
         this->name_cathedra = new string(name_cathedra);
     }
 
-    Aspirant(Aspirant& other) : Student(other)
+    Aspirant(const Aspirant& other) : Student(other)
     {
-        name_dissertation = other.name_dissertation;
-        name_supervisor = other.name_supervisor;
-        name_specialty = other.name_specialty;
-        name_faculty = other.name_faculty;
-        name_university = other.name_university;
-        name_cathedra = other.name_cathedra;
+        this->name_dissertation = new string(*other.name_dissertation);
+        this->name_supervisor = new string(*other.name_supervisor);
+        this->name_faculty = new string(*other.name_faculty);
+        this->name_university = new string(*other.name_university);
+        this->name_cathedra = new string(*other.name_cathedra);
+    }
+
+    Aspirant(Aspirant&& other) : Student(other)
+    {
+        this->name_dissertation = other.name_dissertation;
+        this->name_supervisor = other.name_supervisor;
+        this->name_faculty = other.name_faculty;
+        this->name_university = other.name_university;
+        this->name_cathedra = other.name_cathedra;
 
         other.name_dissertation = nullptr;
         other.name_supervisor = nullptr;
-        other.name_specialty = nullptr;
         other.name_faculty = nullptr;
         other.name_university = nullptr;
         other.name_cathedra = nullptr;
@@ -110,13 +124,12 @@ public:
     {
         delete name_dissertation;
         delete name_supervisor;
-        delete name_specialty;
         delete name_faculty;
         delete name_university;
         delete name_cathedra;
     }
-
-    string get_name_dissertation() { return *name_dissertation; }
+    
+     string get_name_dissertation() { return *name_dissertation; }
     string get_name_supervisor() { return *name_supervisor; }
     string get_name_faculty() { return *name_faculty; }
     string get_name_university() { return *name_university; }
@@ -151,11 +164,11 @@ void print_aspirant(Aspirant aspirant)
 
 int main()
 {
-    cout << "student 1-------------------" << endl;
+    cout << "student 1 real-------------------" << endl;
     Student student("Ivan", "Ivanov", 20, "Computer Science", "CS-101", 4.5, "Petrovich");
     print_student(student);
     cout << endl << endl;
-    cout << "aspirant 1-------------------" << endl;
+    cout << "aspirant 1 real-------------------" << endl;
     Aspirant aspirant("Ivan", "Ivanov", 20, "Computer Science", "CS-101", 4.5, "Peter Griffin Petrovichev",
                       "Dissertation№1", "Anna Romanovna", "Design ", "University Shevchenka", "Cathedra of CS");
     print_aspirant(aspirant);
@@ -163,11 +176,11 @@ int main()
     cout << endl << endl;
 
     
-    cout << "student 2-------------------" << endl;
+    cout << "student 2 copy------------------" << endl;
     Student student2 = student;
     print_student(student2);
     cout << endl << endl;
-    cout << "aspirant 2-------------------" << endl;
+    cout << "aspirant 2 copy------------------" << endl;
     Aspirant aspirant2 = aspirant;
     print_aspirant (aspirant2);
 
