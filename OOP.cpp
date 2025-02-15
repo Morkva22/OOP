@@ -4,7 +4,6 @@
 структор переміщення в ті класи, де це необхідно. Пам’ять
 під поля класу виділяти динамічно
  /*/
-
 #include <iostream>
 #include <string>
 using namespace std;
@@ -19,7 +18,7 @@ public:
     Human(int age, string name, string surname)
         : age(new int(age)), name(new string(name)), surname(new string(surname)) {}
 
-    Human(Human&& other)
+    Human(Human&& other) noexcept
         : age(other.age), name(other.name), surname(other.surname)
     {
         other.age = nullptr;
@@ -27,7 +26,7 @@ public:
         other.surname = nullptr;
     }
 
-    ~Human()
+    virtual ~Human()
     {
         delete age;
         delete name;
@@ -58,7 +57,7 @@ public:
     House(int floar, string adres, int countOfApartament, int countOfPeople, string owner)
         : floar(new int(floar)), adres(new string(adres)), countOfApartament(new int(countOfApartament)), countOfPeople(new int(countOfPeople)), owner(new string(owner)) {}
 
-    House(House&& other)
+    House(House&& other) noexcept
         : floar(other.floar), adres(other.adres), countOfApartament(other.countOfApartament), countOfPeople(other.countOfPeople), owner(other.owner)
     {
         other.floar = nullptr;
@@ -68,7 +67,7 @@ public:
         other.owner = nullptr;
     }
 
-    ~House()
+   virtual ~House()
     {
         delete floar;
         delete adres;
@@ -95,13 +94,14 @@ public:
     Apartament(int floar, int countOfRooms, string owner, string address, int countOfPeople)
         : House(floar, address, countOfRooms, 0, owner), number(new int(2)) {}
 
-    Apartament(Apartament&& other)
-    : House(*other.floar, *other.adres, *other.countOfApartament, *other.countOfPeople, *other.owner), number(new int(0))
+    Apartament(Apartament&& other) noexcept
+        : House(*other.floar, *other.adres, *other.countOfApartament, *other.countOfPeople, *other.owner), number(other.number)
     {
         other.number = nullptr;
+        *number = 0;
     }
 
-    ~Apartament()
+    virtual ~Apartament()
     {
         delete number;
     }
@@ -125,7 +125,7 @@ int main()
     human1.print_Human();
     cout << endl << endl;
     cout << "Human 2 copy:----------------------------------- " << endl;
-    Human human2 = move(human1);
+    Human human2 = Human(0, "", "");
     human2.print_Human();
     cout << endl << endl;
     cout << "House 1:-------------------------------- " << endl;
@@ -133,7 +133,7 @@ int main()
     house1.print_House();
     cout << endl << endl;
     cout << "House 2 copy:----------------------------------- " << endl;
-    House house2 = move(house1);
+    House house2 = House(0, "", 0, 0, "");
     house2.print_House();
     cout << endl << endl;
     cout << "Apartament 1:----------------------------------- " << endl;
@@ -141,10 +141,8 @@ int main()
     apartament1.print_Apartament();
     cout << endl << endl;
     cout << "Apartament 2 copy:----------------------------------- " << endl;
-    Apartament apartament2 = move(apartament1);
+    Apartament apartament2 = Apartament(0, 0, "", "", 0);
     apartament2.print_Apartament();
-    
-    
+
     return 0;
-    
 }
