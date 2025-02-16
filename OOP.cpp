@@ -17,14 +17,10 @@ class Human
 public:
     Human(int age, string name, string surname)
         : age(new int(age)), name(new string(name)), surname(new string(surname)) {}
-
-    Human(Human&& other) noexcept
-        : age(other.age), name(other.name), surname(other.surname)
-    {
-        other.age = nullptr;
-        other.name = nullptr;
-        other.surname = nullptr;
-    }
+    //той самий noexpect, не розумію навіщо копілот його сюди вписав, хоча без нього все працює---------------------------------
+    Human(const Human& other) noexcept
+    //той самий noexpect, не розумію навіщо копілот його сюди вписав  хоча без нього все працює---------------------------------
+        : age(new int (*other.age)),name(new string(*other.name)), surname(new string(*other.surname)){}
 
     virtual ~Human()
     {
@@ -56,18 +52,10 @@ protected:
 public:
     House(int floar, string adres, int countOfApartament, int countOfPeople, string owner)
         : floar(new int(floar)), adres(new string(adres)), countOfApartament(new int(countOfApartament)), countOfPeople(new int(countOfPeople)), owner(new string(owner)) {}
-
-    House(House&& other) noexcept
-        : floar(other.floar), adres(other.adres), countOfApartament(other.countOfApartament), countOfPeople(other.countOfPeople), owner(other.owner)
-    {
-        other.floar = nullptr;
-        other.adres = nullptr;
-        other.countOfApartament = nullptr;
-        other.countOfPeople = nullptr;
-        other.owner = nullptr;
-    }
-
-   virtual ~House()
+    House(const House& other)
+        : floar(new int(*other.floar)), adres(new string(*other.adres)), countOfApartament(new int(*other.countOfApartament)), countOfPeople(new int(*other.countOfPeople)), owner(new string(*other.owner)) {}
+    
+    virtual ~House()
     {
         delete floar;
         delete adres;
@@ -92,13 +80,16 @@ class Apartament : public House
 
 public:
     Apartament(int floar, int countOfRooms, string owner, string address, int countOfPeople)
-        : House(floar, address, countOfRooms, 0, owner), number(new int(2)) {}
+        : House(floar, address, countOfRooms, countOfPeople, owner), number(new int(2)) {}
 
-    Apartament(Apartament&& other) noexcept
-        : House(*other.floar, *other.adres, *other.countOfApartament, *other.countOfPeople, *other.owner), number(other.number)
+    Apartament(const Apartament& other)
+        : House(0, "", 0, 0, ""), number(new int(0)) 
     {
-        other.number = nullptr;
-        *number = 0;
+        *floar = 0;
+        *adres = "";
+        *countOfApartament = 0;
+        *countOfPeople = 0;
+        *owner = "";
     }
 
     virtual ~Apartament()
@@ -113,7 +104,6 @@ public:
         cout << "Count of Apartament: " << *countOfApartament << endl;
         cout << "Count of People: " << *countOfPeople << endl;
         cout << "Owner: " << *owner << endl;
-        cout << "Number of people: " << *countOfPeople << endl;
         cout << "Number: " << *number << endl;
     }
 };
@@ -141,7 +131,7 @@ int main()
     apartament1.print_Apartament();
     cout << endl << endl;
     cout << "Apartament 2 copy:----------------------------------- " << endl;
-    Apartament apartament2 = Apartament(0, 0, "", "", 0);
+    Apartament apartament2 = Apartament(apartament1);
     apartament2.print_Apartament();
 
     return 0;
